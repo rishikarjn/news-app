@@ -1,48 +1,46 @@
-import React, { useEffect, useState} from 'react'
+import   { useEffect} from 'react'
 import Wrapper from "../components/Wrapper"
-import axios from 'axios'
+import { useNewsContext } from '../context/NewsContext';
 
 const News = ({className}) => {
-        
-      const [news, setNews]=useState([]); 
 
-      const fetchNews= async()=>{
-           const response=await axios('https://newsapi.org/v2/everything?q=tesla&from=2025-11-11&sortBy=publishedAt&apiKey=9088b5ddaaf349b79960d1af4918b9aa')
-          console.log(response.data)
-        }
+         const {news, setNews, fetchNews}=useNewsContext();
 
         useEffect(()=>{
-            fetchNews();
+            (async () =>{
+                const data=await fetchNews()
+                setNews(data.articles);
+            })()
         },[])
 
 
   return (
     <Wrapper>
     <div className={`grid grid-cols-4 gap-6 ${className}`}>
-        <NewsCard/>
-        <NewsCard/>
-        <NewsCard/>
-        <NewsCard/>
-        <NewsCard/>
-        <NewsCard/>
+        {news.map((newsDetails, index)=>{
+            return (
+                <NewsCard key={index} details={newsDetails}/>
+            )
+        })}
     </div>
     </Wrapper>
   )
 }
   
-const NewsCard=() =>{
+const NewsCard=({details}) =>{
     return(
         <div className="card bg-base-200  shadow-sm">
   <figure>
     <img
-      src="https://img.daisyui.com/images/stock/photo-1606107557195-0e29a4b5b4aa.webp"
+    className='aspect-video object-contain'
+      src={details?.urlToImage}
       alt="Shoes" />
   </figure>
   <div className="card-body">
-    <h2 className="card-title">Card Title</h2>
-    <p>A card component has a figure, a body part, and inside body there are title and actions parts</p>
+    <h2 className="card-title line-clamp-2">{details?.title}</h2>
+    <p className='line-clamp-3'>{details.description}</p>
     <div className="card-actions justify-end">
-      <button className="btn btn-primary">Buy Now</button>
+      <button onClick={()=>window.open (details.url)} className='badge-outline btn'>Read More</button>
     </div>
   </div>
 </div>
