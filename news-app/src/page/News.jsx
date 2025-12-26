@@ -1,10 +1,11 @@
 import   { useEffect} from 'react'
 import Wrapper from "../components/Wrapper"
 import { useNewsContext } from '../context/NewsContext';
+import Loader from '../components/Loader';
 
 const News = ({className}) => {
 
-         const {news, setNews, fetchNews}=useNewsContext();
+         const {news, setNews, fetchNews, loading}=useNewsContext();
 
         useEffect(()=>{
             (async () =>{
@@ -12,12 +13,14 @@ const News = ({className}) => {
                 setNews(data.articles);
             })()
         },[])
-
+ if(loading) return <Loader className={'w-fit m-auto py-24'}/>
 
   return (
     <Wrapper>
     <div className={`grid grid-cols-4 gap-6 ${className}`}>
         {news.map((newsDetails, index)=>{
+            if(!newsDetails.urlToImage )
+              null;   
             return (
                 <NewsCard key={index} details={newsDetails}/>
             )

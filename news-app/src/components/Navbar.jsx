@@ -4,16 +4,16 @@ import { useNewsContext } from "../context/NewsContext";
 
 const Navbar = ({className}) => {
 
-  const [searchValue, setSearchValue]=useState('');
+  
   const {setNews, fetchNews} =useNewsContext(); 
-   
-  let timer;
-  const searchNews=(e)=>{
+    
+  let timer=null;
+  const searchNews= (e)=>{
     const searchValue=e.target.value;
     if(!searchValue) return;
     clearTimeout(timer);
 
-    const timer=setTimeout(async()=>{
+     timer=setTimeout(async()=>{
          const data =await fetchNews(`/everything?q=${searchValue}`)
       setNews(data.articles);
     },1000); 
